@@ -39,12 +39,17 @@ impl TextToDigit {
 
 fn sum_first_and_last(input:String)-> Vec<i32> {
     let mut cal_nums:Vec<i32> = Vec::new();
+    let mut i = 0;
     for line in input.lines(){
-        println!("Input line:{}",line);
+        i= i + 1;
+        let mut j = 0;
+        println!("{} - Input line:{}, size: {}", i,line, line.len());
         let mut x:char = 'z';
         let mut y:char = 'z';
+        let mut lastchar: char = '0';
         let mut num:String = "".to_owned();
         for ch in line.chars(){
+            j = j+1;
             num.push(ch);
             if ch.is_ascii_digit(){
                 if x == 'z'{
@@ -71,28 +76,35 @@ fn sum_first_and_last(input:String)-> Vec<i32> {
                     }
                 }
             }
+            lastchar = ch;
         }
         if (x != 'z') & (y == 'z'){
             y = x;
         }
-        println!("Out of the loop:{}, x={}, y ={}", num, x, y);
+        //println!("Out of the loop:{}, x={}, y ={}", num, x, y);
         let digit = format!("{}{}", x, y);
-        println!("Final digits are {}", digit);
+        println!("Final digits are {}, iterated over {} chars, last char was {}", digit, j, lastchar);
+        if j != line.len(){
+            println!("Bad line! line {}", i);
+        }
+        else {
+            println!("length: {}, iterations: {}", line.len(), j);
+        }
         cal_nums.push(digit.parse::<i32>().unwrap());
     }
-
+    println!("Iterated {} times", i);
     return cal_nums
 }
 
 
 fn main() {
     // Windows was used to run this code so it, regrettably, uses NT style paths.
-    let contents = open_file("day01\\src\\input2.txt");
+    let contents = open_file("day01\\src\\input.txt");
 
     if let Ok(foo) = contents {
         let cal_nums = sum_first_and_last(foo);
         let sum:i32 = cal_nums.iter().sum();
-        println!("Array length is {} and its values are {:?}", cal_nums.len(), cal_nums);
+        //println!("Array length is {} and its values are {:?}", cal_nums.len(), cal_nums);
         println!("Final sum is {} ", sum);
     }
     else {
