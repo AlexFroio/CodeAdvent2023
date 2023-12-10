@@ -8,7 +8,7 @@ struct Bag {
     rounds: Vec<Round>,
     valid: bool
 }
-
+#[derive(Debug)]
 struct Round {
     red:i32,
     green:i32,
@@ -32,12 +32,6 @@ impl Default for Round {
             green: 0,
             blue: 0
         }
-    }
-}
-
-impl fmt::Display for Round {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "G{}, R{}, B{}", self.green, self.red, self.blue)
     }
 }
 
@@ -74,19 +68,38 @@ fn sum_possible(default:Round, input:String) -> Vec<i32> {
                             round.blue += res.parse::<i32>().unwrap();
                         }
                     }
-                    println!("Round has {}", round);
+                    println!("Round has {:?}", round);
                     bag.rounds.push(round);
                 }
             }
-            for round in bag.rounds.iter() {
-                if (default.green < round.green) | (default.red < round.red) | (default.blue < round.blue){
-                    bag.valid = false;
+            // Part 1:
+            //for round in bag.rounds.iter() {
+            //    if (default.green < round.green) | (default.red < round.red) | (default.blue < round.blue){
+            //        bag.valid = false;
+            //    }
+            //}
+
+            // Part 2:
+            let mut max_round = Round::default();
+            for round in bag.rounds.iter(){
+                if max_round.green < round.green {
+                    max_round.green = round.green;
+                }
+                if max_round.red < round.red {
+                    max_round.red = round.red;
+                }
+                if max_round.blue < round.blue {
+                    max_round.blue = round.blue;
                 }
             }
+            poss_games.push(max_round.green * max_round.red * max_round.blue);
         }
-        if bag.valid {
-            poss_games.push(bag.id);
-        }
+        // Part 1:
+        //if bag.valid {
+        //    poss_games.push(bag.id);
+        //}
+
+        // Part 2:
     }
     return poss_games;
 }
