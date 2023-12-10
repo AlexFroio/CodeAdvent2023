@@ -58,32 +58,37 @@ fn sum_first_and_last(input:String)-> Vec<i32> {
                 else {
                     y = ch;
                 }
-                num.clear();
             }
             else {
                 for number in TextToDigit::iter(){
                     if num.contains(number.as_ref())
                     {
+                        //println!("Match, {} contains {}", num, number);
+                        //if lastchar != number.value(){
                         if x == 'z'{
                             x = number.value();
                         }
                         else {
                             y = number.value();
                         }
-                        //println!("{}, {}, x={}, y ={}", num, number, x, y);
+                        let clean = num.chars().last().unwrap();
                         num.clear();
-                        break;
+                        num.push(clean);
+                        //}
+                        lastchar = number.value();
+                        println!("{}, {}, x={}, y ={}", num, number, x, y);
+
                     }
                 }
             }
-            lastchar = ch;
+            //println!("{}, x={}, y ={}", num, x, y);
         }
-        if (x != 'z') & (y == 'z'){
+        if y == 'z'{
             y = x;
         }
         //println!("Out of the loop:{}, x={}, y ={}", num, x, y);
         let digit = format!("{}{}", x, y);
-        println!("Final digits are {}, iterated over {} chars, last char was {}", digit, j, lastchar);
+        println!("Final digits are {}, iterated over {} chars", digit, j);
         if j != line.len(){
             println!("Bad line! line {}", i);
         }
@@ -99,7 +104,7 @@ fn sum_first_and_last(input:String)-> Vec<i32> {
 
 fn main() {
     // Windows was used to run this code so it, regrettably, uses NT style paths.
-    let contents = open_file("day01\\src\\input.txt");
+    let contents = open_file("day01\\src\\input2.txt");
 
     if let Ok(foo) = contents {
         let cal_nums = sum_first_and_last(foo);
