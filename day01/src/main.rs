@@ -75,7 +75,6 @@ fn sum_first_and_last(input:String)-> Vec<i32> {
                         num.clear();
                         num.push(clean);
                         //}
-                        lastchar = number.value();
                         println!("{}, {}, x={}, y ={}", num, number, x, y);
 
                     }

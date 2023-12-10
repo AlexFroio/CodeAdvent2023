@@ -1,5 +1,3 @@
-use core::fmt;
-
 use utils::open_file;
 use regex::Regex;
 
