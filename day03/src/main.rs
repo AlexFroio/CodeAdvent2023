@@ -23,7 +23,7 @@ impl Default for PartNum {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 struct PartValidator {
     ch:char,
     x:i32,
@@ -54,7 +54,7 @@ fn print_all_unique_chars(input:String){
 }
 
 fn validate_parts (input:String) -> Vec<PartNum> {
-    let  (mut parts, mut validators) = process_parts_and_validators(input);
+    let  (mut parts, validators) = process_parts_and_validators(input);
     parts = match_parts_to_val(parts, validators);
     return parts
 }
@@ -65,11 +65,11 @@ fn process_parts_and_validators (input:String) -> (Vec<PartNum>, Vec<PartValidat
     let mut temp_part = PartNum::default();
     let mut temp_str = String::new();
 
-    for (x, line) in input.lines().enumerate(){
-        for (y,ch) in line.chars().enumerate() {
+    for (y, line) in input.lines().enumerate(){
+        for (x,ch) in line.chars().enumerate() {
             if ch == '.' {
                 if temp_str.is_empty(){
-                    break;
+                    // Intentionally left empty
                 }
                 else {
                     temp_part.num = temp_str.parse().unwrap();
@@ -109,7 +109,10 @@ fn match_parts_to_val(parts:Vec<PartNum>, valids:Vec<PartValidator>) -> Vec<Part
         for validator in valids.iter() {
             if (part.x - 1..part.x + part.size).contains(&validator.x) && (part.y - 1 .. part.y + 1).contains(&validator.y) {
                 part.valid = true;
+                println!("Part Valid! {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
+                println!("Validator was {}, x:{}, y:{}", validator.ch, validator.x, validator.y)
             }
+            //println!("Part {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
         }
         matched_parts.push(part);
     }
@@ -119,6 +122,7 @@ fn match_parts_to_val(parts:Vec<PartNum>, valids:Vec<PartValidator>) -> Vec<Part
 fn filter_parts (input:Vec<PartNum>) -> Vec<i32> {
     let mut num_vec = Vec::new();
     for part in input.iter() {
+        println!("Part {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
         if part.valid {
             num_vec.push(part.num);
         }
@@ -129,7 +133,7 @@ fn filter_parts (input:Vec<PartNum>) -> Vec<i32> {
 
 fn main() {
     // Windows was used to run this code so it, regrettably, uses NT style paths.
-    let contents = open_file("day03\\src\\input.txt");
+    let contents = open_file("day03\\src\\input_test.txt");
 
 
     if let Ok(foo) = contents {
