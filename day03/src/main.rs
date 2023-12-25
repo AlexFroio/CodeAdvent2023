@@ -2,6 +2,7 @@ use std::collections::btree_map::Range;
 
 use utils::open_file;
 
+#[derive(Copy,Clone)]
 struct PartNum {
     num:i32,
     x:i32,
@@ -53,10 +54,17 @@ fn print_all_unique_chars(input:String){
 }
 
 fn validate_parts (input:String) -> Vec<PartNum> {
+    let  (mut parts, mut validators) = process_parts_and_validators(input);
+    parts = match_parts_to_val(parts, validators);
+    return parts
+}
+
+fn process_parts_and_validators (input:String) -> (Vec<PartNum>, Vec<PartValidator>){
     let mut parts = Vec::new();
     let mut validators = Vec::new();
     let mut temp_part = PartNum::default();
     let mut temp_str = String::new();
+
     for (x, line) in input.lines().enumerate(){
         for (y,ch) in line.chars().enumerate() {
             if ch == '.' {
@@ -92,16 +100,31 @@ fn validate_parts (input:String) -> Vec<PartNum> {
                 }
             }
         }
-        for part in parts.iter() {
-            for validator in validators.iter() {
-                if ((part.x - 1..part.x + part.size).contains(&validator.x) && (part.y - 1 .. part.y + 1).contains(&validator.y)) {
-                    part.valid = true;
-                }
+    return (parts, validators)
+}
+
+fn match_parts_to_val(parts:Vec<PartNum>, valids:Vec<PartValidator>) -> Vec<PartNum> {
+    let mut matched_parts = Vec::new();
+    for mut part in parts.into_iter() {
+        for validator in valids.iter() {
+            if (part.x - 1..part.x + part.size).contains(&validator.x) && (part.y - 1 .. part.y + 1).contains(&validator.y) {
+                part.valid = true;
             }
         }
-        return parts
+        matched_parts.push(part);
     }
+    return matched_parts
+}
 
+fn filter_parts (input:Vec<PartNum>) -> Vec<i32> {
+    let mut num_vec = Vec::new();
+    for part in input.iter() {
+        if part.valid {
+            num_vec.push(part.num);
+        }
+    }
+    return num_vec
+}
 
 
 fn main() {
@@ -111,8 +134,9 @@ fn main() {
 
     if let Ok(foo) = contents {
         let valid_parts = validate_parts(foo);
-        let sum:i32 = valid_parts.iter().map(|part|part.valid).sum();
-        println!("Possible games ID sum is {}", sum);
+        let valid_nums = filter_parts(valid_parts);
+        let sum:i32 = valid_nums.iter().sum();
+        println!("Parts sum is {}", sum);
     }
     else {
         println!("no");
