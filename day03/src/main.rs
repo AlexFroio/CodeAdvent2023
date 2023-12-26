@@ -67,18 +67,7 @@ fn process_parts_and_validators (input:String) -> (Vec<PartNum>, Vec<PartValidat
 
     for (y, line) in input.lines().enumerate(){
         for (x,ch) in line.chars().enumerate() {
-            if ch == '.' {
-                if temp_str.is_empty(){
-                    // Intentionally left empty
-                }
-                else {
-                    temp_part.num = temp_str.parse().unwrap();
-                    parts.push(temp_part);
-                    temp_str.clear();
-                    temp_part = PartNum::default();
-                }
-            }
-            else if ch.is_alphanumeric() {
+            if ch.is_alphanumeric() {
                 if temp_str.is_empty() {
                     temp_str.push(ch);
                     temp_part.x = x as i32;
@@ -91,6 +80,22 @@ fn process_parts_and_validators (input:String) -> (Vec<PartNum>, Vec<PartValidat
                 }
             }
             else {
+                if temp_str.is_empty(){
+                    // Intentionally left empty
+                }
+                else {
+                    temp_part.num = temp_str.parse().unwrap();
+                    parts.push(temp_part);
+                    temp_str.clear();
+                    temp_part = PartNum::default();
+                }
+            }
+
+            if ch == '.' {
+                // Intentionally left empty
+
+            }
+            else if !ch.is_alphanumeric(){
                 let validator = PartValidator {
                     x : x as i32,
                     y : y as i32,
@@ -98,6 +103,15 @@ fn process_parts_and_validators (input:String) -> (Vec<PartNum>, Vec<PartValidat
                 };
                 validators.push(validator);
                 }
+            }
+            if temp_str.is_empty(){
+                // Intentionally left empty
+            }
+            else {
+                temp_part.num = temp_str.parse().unwrap();
+                parts.push(temp_part);
+                temp_str.clear();
+                temp_part = PartNum::default();
             }
         }
     return (parts, validators)
@@ -107,10 +121,11 @@ fn match_parts_to_val(parts:Vec<PartNum>, valids:Vec<PartValidator>) -> Vec<Part
     let mut matched_parts = Vec::new();
     for mut part in parts.into_iter() {
         for validator in valids.iter() {
-            if (part.x - 1..part.x + part.size).contains(&validator.x) && (part.y - 1 .. part.y + 1).contains(&validator.y) {
+            if (part.x - 1 ..part.x + part.size + 1).contains(&validator.x) && (part.y - 1 .. part.y + 2).contains(&validator.y) {
                 part.valid = true;
                 println!("Part Valid! {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
-                println!("Validator was {}, x:{}, y:{}", validator.ch, validator.x, validator.y)
+                println!("Validator was {}, x:{}, y:{}", validator.ch, validator.x, validator.y);
+                //break;
             }
             //println!("Part {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
         }
@@ -122,18 +137,19 @@ fn match_parts_to_val(parts:Vec<PartNum>, valids:Vec<PartValidator>) -> Vec<Part
 fn filter_parts (input:Vec<PartNum>) -> Vec<i32> {
     let mut num_vec = Vec::new();
     for part in input.iter() {
-        println!("Part {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
+        //println!("Part {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
         if part.valid {
             num_vec.push(part.num);
         }
     }
+    println!("Valid parts are {:?}", num_vec);
     return num_vec
 }
 
 
 fn main() {
     // Windows was used to run this code so it, regrettably, uses NT style paths.
-    let contents = open_file("day03\\src\\input_test.txt");
+    let contents = open_file("day03\\src\\input.txt");
 
 
     if let Ok(foo) = contents {
