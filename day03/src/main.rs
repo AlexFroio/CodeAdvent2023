@@ -125,7 +125,7 @@ fn match_parts_to_val(parts:Vec<PartNum>, valids:Vec<PartValidator>) -> Vec<Part
                 part.valid = true;
                 println!("Part Valid! {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
                 println!("Validator was {}, x:{}, y:{}", validator.ch, validator.x, validator.y);
-                //break;
+                break;
             }
             //println!("Part {}, x:{}, y:{}, size:{}, and is {}", part.num, part.x, part.y, part.size, part.valid);
         }
